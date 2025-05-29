@@ -13,7 +13,7 @@ class Swish(nn.Module):
 
 
 class TimeEmbedding(nn.Module):
-    def __init__(self, T, d_model, dim):
+    def __init__(self, T, d_model, dim): # 1000, 128, 512
         assert d_model % 2 == 0
         super().__init__()
         emb = torch.arange(0, d_model, step=2) / d_model * math.log(10000)
@@ -172,7 +172,7 @@ class UNet(nn.Module):
         chs = [ch]  # record output channel when dowmsample for upsample
         now_ch = ch
         for i, mult in enumerate(ch_mult):
-            out_ch = ch * mult
+            out_ch = ch * mult # [128, 256, 512, 1024]
             for _ in range(num_res_blocks):
                 self.downblocks.append(ResBlock(
                     in_ch=now_ch, out_ch=out_ch, tdim=tdim,
@@ -215,9 +215,9 @@ class UNet(nn.Module):
 
     def forward(self, x, t):
         # Timestep embedding
-        temb = self.time_embedding(t)
+        temb = self.time_embedding(t) # [B, T, 128]
         # Downsampling
-        h = self.head(x)
+        h = self.head(x) # [B, 128, H, W]
         hs = [h]
         for layer in self.downblocks:
             h = layer(h, temb)

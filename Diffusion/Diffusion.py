@@ -73,7 +73,7 @@ class GaussianDiffusionSampler(nn.Module):
 
     def p_mean_variance(self, x_t, t):
         # below: only log_variance is used in the KL computations
-        var = torch.cat([self.posterior_var[1:2], self.betas[1:]])
+        var = torch.cat([self.posterior_var[1:2], self.posterior_var[1:]])
         var = extract(var, t, x_t.shape)
 
         eps = self.model(x_t, t)
